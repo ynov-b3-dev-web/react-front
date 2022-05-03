@@ -1,70 +1,103 @@
-# Getting Started with Create React App
+# Front-end - ReactJS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Démarrage
 
-## Available Scripts
+Avec [create-react-app](https://create-react-app.dev/) :
 
-In the project directory, you can run:
+```bash
+# changer nom-app par le nom du dossier qui sera créé dans le répertoire courant
+npx create-react-app nom-app
+```
 
-### `npm start`
+Une fois l'application créée, ouvrir le dossier `nom-app` dans VSCode ou l'éditeur de votre choix
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Une fois dans le projet, il est possible de lancer le serveur à l'aide du script `start` défini dans la section `scripts` du fichier `package.json` :
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+# Avec NPM
+npm run start
+# Avec Yarn
+yarn start
+```
 
-### `npm test`
+## Les composants
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Une interface construite avec ReactJS est une arborescence de composants. Le composant par défaut créé à l'installation de l'application est nommé `App`. Il est injecté depuis le fichier `src/index.js` dans la balise `div` d'id `root` :
 
-### `npm run build`
+> src/index.js
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```js
+// Le composant App se trouve dans src/App.js
+import App from './App';
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+//...
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
 
-### `npm run eject`
+### Ecrire un composant
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Pour écrire un composant, on peut créer un fichier Javascript et le déclarer sous forme de fonction :
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+// src/Hello.js
+const Hello = () => <h1>Hello !</h1>;
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+export default Hello;
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Ce composant très minimaliste est représenté sous forme d'une fonction qui renvoie un contenu `JSX`. `JSX` est une extension syntaxique de Javascript introduite par ReactJS, permettant d'écrire des composants.
 
-## Learn More
+```js
+// Autre syntaxe possible
+function Hello() {
+  return (
+    <h1>Hello !</h1>
+  );
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+export default Hello;
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Au sein d'un composant, on peut donc décrire le contenu qu'on souhaite afficher. Dans ces composants, on peut utiliser des balises HTML, mais cela n'en fait en rien un contenu HTML. C'est React qui calculera, sur la base du JSX qu'on aura écrit, le contenu HTML à générer, [à l'aide de Javascript](https://fr.reactjs.org/docs/introducing-jsx.html#jsx-represents-objects).
 
-### Code Splitting
+Enfin, on peut écrire un composant dans un fichier dédié, puis en faire l'export par défaut de ce fichier. Nous en faisons donc un module importable dans n'importe quel autre composant de React.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+> src/Hello.js
 
-### Analyzing the Bundle Size
+```js
+const Hello = () => <h1>Hello !</h1>;
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+export default Hello;
+```
 
-### Making a Progressive Web App
+> src/App.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```js
+import Hello from './Hello';
 
-### Advanced Configuration
+function App() {
+  return (
+    <Hello />
+  );
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+export default App;
+```
 
-### Deployment
+> src/index.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```js
+import App from './App';
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
