@@ -101,3 +101,107 @@ root.render(
   </React.StrictMode>
 );
 ```
+
+### Propriétés
+
+En entrée de tout composant, on peut lui passer des **propriétés**. Pour les lire, on va utiliser un argument `props` :
+
+> src/Hello.js
+
+```js
+const Hello = (props) => <h1>Hello {props.name} !</h1>;
+
+export default Hello;
+```
+
+Dans un autre composant, si on souhaite utiliser le composant `Hello`, on pourra lui indiquer ses propriétés grâce à des **attributs** en JSX :
+
+> src/App.js
+
+```js
+import Hello from './Hello';
+
+function App() {
+  // Affichera <h1>Hello Bob !</h1>
+  return (
+    <Hello name="Bob" />
+  );
+}
+
+export default App;
+```
+
+On peut également déstructurer les props pour utiliser directement les propriétés dans le composant :
+
+```js
+// extrait props.name directement dans une variable name
+const Hello = ({ name }) => <h1>Hello {name} !</h1>;
+
+export default Hello;
+```
+
+> Note importante : on ne **modifiera pas** une propriété dans un composant. En effet, si on reçoit une propriété, c'est qu'elle a été transmise par un composant situé au-dessus de nous dans l'arborescence. Nous n'avons donc pas à modifier ce qui nous a été transmis. Le contrôle de la valeur doit rester à l'endroit où nous avons transmis cette valeur, pas à l'endroit où nous la recevons. On peut également appeler ça le **one-way data binding** : toujours du parent à l'enfant
+
+#### Validation des types sur les propriétés
+
+Si on utilise Javascript et non Typescript, alors nous n'avons pas de typage fort.
+
+Cependant, il existe un package `prop-types` permettant d'indiquer à ReactJS le type attendu pour les propriétés passées à un composant.
+
+Il faut donc installer ce package, puis l'utiliser dans nos composants :
+
+```bash
+npm i prop-types
+```
+
+> src/Hello.js
+
+```js
+import PropTypes from 'prop-types';
+
+const Hello = ({ name }) => (
+    <h1>Hello {name}</h1>
+);
+
+Hello.propTypes = {
+  name: PropTypes.string,
+};
+
+export default Hello;
+```
+
+> La différence entre Typescript et Javascript ici, est que la validation avec `prop-types` ne se fera pas à l'étape de compilation mais au "runtime", quand l'application sera lancée. En cas de propriétés incorrectes, un _warning_ s'affichera dans la console avec `prop-types`. Avec Typescript, nous devrions avoir l'erreur dès la compilation
+
+Retrouvez la liste des PropTypes utilisables [ici](https://reactjs.org/docs/typechecking-with-proptypes.html#proptypes).
+
+### Etat
+
+Un composant peut disposer d'un **état interne**. Contrairement aux propriétés que le composant peut recevoir en entrée, et que l'**on ne va pas modifier**, un état pourra quant à lui être modifié. En effet, si on déclare une variable d'état dans un composant, alors nous contrôlons la valeur de cette variable, contrairement à une propriété.
+
+Pour créer une variable d'état, on va utiliser la fonction `useState` exportée par React :
+
+```js
+import { useState } from 'react';
+
+function Counter() {
+  // Declare a new stae variable, which we'll call "count"
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+> Note : la fonction `useState` est ce qu'on appelle un **hook** : une fonction utilitaire qui va effectuer une tâche et nous renvoyer des informations
+
+En paramètre, nous lui indiquons la valeur initiale de l'état (ici 0 pour notre compteur).
+
+En retour, la fonction `useState` va nous renvoyer un tableau contenant la variable d'état, que nous pourrons utiliser dans le rendu du composant, et une fonction permettant de modifier la valeur de la variable d'état.
+
+Nous déstructurons alors ce tableau pour disposer d'une variable `count` et une fonction `setCount`.
