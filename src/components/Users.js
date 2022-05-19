@@ -1,22 +1,17 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { fetchUsers } from '../services/userService';
 
 const Users = () => {
   const [users, setUsers] = useState(null);
   const [error, setError] = useState(false);
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('http://jsonplaceholder.typicode.com/users');
-      setUsers(response.data);
-    } catch (e) {
-      console.error(e);
-      setError(true);
-    }
-  };
-
   useEffect(() => {
-    fetchUsers();
+    fetchUsers()
+      .then((userList) => setUsers(userList))
+      .catch((e) => {
+        console.error(e);
+        setError(true);
+      });
   }, []);
 
   return (
