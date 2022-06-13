@@ -205,3 +205,32 @@ En paramètre, nous lui indiquons la valeur initiale de l'état (ici 0 pour notr
 En retour, la fonction `useState` va nous renvoyer un tableau contenant la variable d'état, que nous pourrons utiliser dans le rendu du composant, et une fonction permettant de modifier la valeur de la variable d'état.
 
 Nous déstructurons alors ce tableau pour disposer d'une variable `count` et une fonction `setCount`.
+
+### Hooks
+
+Les hooks sont des fonctions utilitaires réutilisables dans n'importe quelle partie de l'application.
+
+Ils peuvent donc prendre des paramètres, mais également (et surtout) nous retourner de l'information utile.
+
+L'exemple de hook le plus courant est fourni par React lui-même : `useState(initialValue)`.
+
+Ce hook permet de disposer d'une variable d'état qui va suivre le cycle de vie du composant.
+
+En paramètre, on lui fournira une valeur initiale.
+
+En retour, on pourra extraire d'un tableau la variable elle-même, ainsi qu'une méthode permettant de la modifier.
+
+Exemple :
+
+```js
+import { useState } from 'react';
+
+const MyComponent = () => {
+  // Si on exécutait setLoading(false), on modifierait la valeur de la variable loading
+  const [loading, setLoading] = useState(true);
+
+  return (loading ? <div>Loading...</div> : <div>Coucou !</div>);
+}
+```
+
+> Note : Il ne faut **jamais** modifier directement une variable d'état (avec un simple `loading = false` par exemple). Les raisons sont multiples : une variable d'état est ce qu'on appelle **immuable** (en anglais "**immutable**"). Il est donc nécessaire d'utiliser la fonction `setLoading` fournie dans notre exemple plutôt qu'un simple signe `=`. Par ailleurs, quand on effectue une mise à jour de l'état avec la fonction appropriée, React peut planifier une mise à jour de l'affichage du composant, donc un rafraîchissement visuel
