@@ -208,7 +208,7 @@ Nous déstructurons alors ce tableau pour disposer d'une variable `count` et une
 
 ### Hooks
 
-Les hooks sont des fonctions utilitaires réutilisables dans n'importe quelle partie de l'application.
+Les hooks sont des **fonctions utilitaires réutilisables** dans n'importe quelle partie de l'application.
 
 Ils peuvent donc prendre des paramètres, mais également (et surtout) nous retourner de l'information utile.
 
@@ -234,3 +234,26 @@ const MyComponent = () => {
 ```
 
 > Note : Il ne faut **jamais** modifier directement une variable d'état (avec un simple `loading = false` par exemple). Les raisons sont multiples : une variable d'état est ce qu'on appelle **immuable** (en anglais "**immutable**"). Il est donc nécessaire d'utiliser la fonction `setLoading` fournie dans notre exemple plutôt qu'un simple signe `=`. Par ailleurs, quand on effectue une mise à jour de l'état avec la fonction appropriée, React peut planifier une mise à jour de l'affichage du composant, donc un rafraîchissement visuel
+
+Autre exemple avec `useEffect`, qui permet de programmer des effets de bord à certains moments du cycle de vie du composant :
+
+```js
+useEffect(() => {
+  setLoading(true);
+  fetchUserList()
+    .then((userList) => setUserList(userList))
+    .catch((e) => {
+      console.error(e);
+      setError(true);
+    })
+    .finally(() => setLoading(false));
+}, []); // <-- Le tableau de dépendances permet de contrôler à quel moment l'effet de bord se lance
+```
+
+`useEffect` prend un callback en premier paramètre, et un tableau de dépendances en second paramètre.
+
+Ce tableau de dépendances permet de contrôler à quel moment l'effet de bord se lance.
+
+Ici, un tableau vide indique que nous souhaitons que la fonction se lance juste après le **montage** du composant.
+
+Dans ce tableau, on pourrait également mettre des propriétés passées en entrée du composant par exemple, qui forcerait l'exécution d'une fonction particulière lorsque la propriété change (d'où la notion d'effet de bord : il se passe quelque chose, nous lançons un effet suite à cette chose).
