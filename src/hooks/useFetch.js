@@ -8,7 +8,7 @@ const useFetch = (callback) => {
   useEffect(() => {
     setLoading(true);
     callback()
-      .then((userList) => setData(userList))
+      .then((res) => setData(res))
       .catch((e) => {
         console.error(e);
         setError(true);
