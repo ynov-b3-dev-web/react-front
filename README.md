@@ -257,3 +257,58 @@ Ce tableau de dépendances permet de contrôler à quel moment l'effet de bord s
 Ici, un tableau vide indique que nous souhaitons que la fonction se lance juste après le **montage** du composant.
 
 Dans ce tableau, on pourrait également mettre des propriétés passées en entrée du composant par exemple, qui forcerait l'exécution d'une fonction particulière lorsque la propriété change (d'où la notion d'effet de bord : il se passe quelque chose, nous lançons un effet suite à cette chose).
+
+#### Des hooks personnalisés
+
+Nous pouvons également définir **nos propres hooks**, afin de disposer de fonctionnalités réutilisables au sein de notre application.
+
+Exemple :
+
+Dans l'exemple d'avant, nous avons utilisé `useEffect` pour récupérer visiblement une liste d'utilisateurs.
+
+Nous pourrions considérer que notre application aura besoin de récupérer de la donnée de manière générale, pas forcément que des utilisateurs, et ainsi généraliser le comportement d'une telle fonctionnalité.
+
+On appellerait cette fonctionnalité `useFetch`, car elle nous sert à récupérer (ou fetch) des données.
+
+Ainsi, dans un nouveau fichier `src/hooks/useFetch.js`, on peut définir ce comportement général :
+
+```js
+import { useEffect, useState } from 'react';
+
+const useFetch = (callback) => { // callback en entrée : comment chercher la donnée
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    callback()
+      .then((res) => setData(res))
+      .catch((e) => {
+        console.error(e);
+        setError(true);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  return [loading, data, error]; // en retour, informations sur la requête et la récupération des données
+};
+
+export default useFetch;
+```
+
+On prend donc un callback en entrée, et on fournit à l'appelant des informations sur la requête en cours, sous forme de tableau.
+
+Nous pouvons donc internaliser la logique de récupération des données, et exposer à l'appelant les informations considérées comme pertinentes.
+
+Dans un composant `src/components/Users.js` :
+
+```js
+const Users = () => {
+  const [loading, data, error] = useFetch(fetchUsers);
+
+  return (
+    //...
+  );
+}
+```
