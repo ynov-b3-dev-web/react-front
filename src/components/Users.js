@@ -1,18 +1,22 @@
-import useFetch from '../hooks/useFetch';
+import { CircularProgress } from '@mui/material';
+import { useQuery } from 'react-query';
 import { fetchOtherUsers } from '../services/userService';
 
 const Users = () => {
-  const [loading, data, error] = useFetch(fetchOtherUsers);
+  const { isLoading, isError, data, error } = useQuery('users', fetchOtherUsers);
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
 
   return (
     <div>
       <h1>Utilisateurs</h1>
-      {error && <p>Une erreur est survenue</p>}
 
-      {!loading ? (
+      {!isLoading ? (
         data.map((user) => <p key={user.id}>{user.username}</p>)
       ) : (
-        <div>Loading...</div>
+        <CircularProgress size={30} />
       )}
     </div>
   );
