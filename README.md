@@ -206,7 +206,7 @@ En retour, la fonction `useState` va nous renvoyer un tableau contenant la varia
 
 Nous déstructurons alors ce tableau pour disposer d'une variable `count` et une fonction `setCount`.
 
-### Hooks
+## Hooks
 
 Les hooks sont des **fonctions utilitaires réutilisables** dans n'importe quelle partie de l'application.
 
@@ -258,7 +258,7 @@ Ici, un tableau vide indique que nous souhaitons que la fonction se lance juste 
 
 Dans ce tableau, on pourrait également mettre des propriétés passées en entrée du composant par exemple, qui forcerait l'exécution d'une fonction particulière lorsque la propriété change (d'où la notion d'effet de bord : il se passe quelque chose, nous lançons un effet suite à cette chose).
 
-#### Des hooks personnalisés
+### Des hooks personnalisés
 
 Nous pouvons également définir **nos propres hooks**, afin de disposer de fonctionnalités réutilisables au sein de notre application.
 
