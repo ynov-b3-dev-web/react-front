@@ -312,3 +312,104 @@ const Users = () => {
   );
 }
 ```
+
+## React Query
+
+La librairie [`React Query`](https://react-query.tanstack.com/) nous expose un hook `useQuery` offrant de nombreuses fonctionnalités, bien plus avancées que notre hook personnalisé `useFetch`.
+
+Avec le hook `useQuery`, nous pouvons récupérer diverses informations sur la requête demandée : `isLoading`, `isError`, `isSuccess`, `data`, et [bien d'autres](https://react-query.tanstack.com/guides/queries)...
+
+### Installation
+
+Nous allons donc l'installer avec :
+
+```bash
+npm i react-query
+```
+
+### Fournisseur
+
+Pour son utilisation, il faut, au niveau le plus haut de l'application, donc du composant `App`, intégrer un **fournisseur** (ou `Provider`) qui nous permettra d'utiliser le hook `useQuery` dans n'importe quel composant de notre application.
+
+Dans `App` :
+
+```js
+import { QueryClient, QueryClientProvider } from 'react-query';
+import Login from './components/Login';
+import Users from './components/Users';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Users />
+      <Login />
+    </QueryClientProvider>
+  );
+}
+
+export default App;
+```
+
+Nous pourons donc **fournir** un `queryClient` à tout composant souhaitant effectuer une requête. Ce client sera automatiquement consommé lors de l'appel à `useQuery`.
+
+Si nous devons fournir un client au plus haut niveau de l'application, c'est parce que React Query intègre un mécanisme de cache interne : lorsqu'on va effectuer une requête, on va définir une **clé** associée à cette requête ainsi qu'une fonction permettant de récupérer la donnée.
+
+React Query pourra ainsi **stocker** le résultat en cache. Si nous requêtons la même clé de nouveau, alors il sera en mesure de nous retourner la donnée en cache. Sinon, il utilisera la fonction de rappel pour aller requêter concrètement la donnée.
+
+### Le hook `useQuery`
+
+Dans notre composant `Users`, nous pouvons alors utiliser `useQuery` :
+
+```js
+import { CircularProgress } from '@mui/material';
+import { useQuery } from 'react-query';
+import { fetchOtherUsers } from '../services/userService';
+
+const Users = () => {
+  const { isLoading, isError, data, error } = useQuery('users', fetchOtherUsers);
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
+
+  return (
+    <div>
+      <h1>Utilisateurs</h1>
+
+      {!isLoading ? (
+        data.map((user) => <p key={user.id}>{user.username}</p>)
+      ) : (
+        <CircularProgress size={30} />
+      )}
+    </div>
+  );
+};
+
+export default Users;
+```
+
+### Les outils de développement
+
+React Query nous fournit également un composant pour inspecter facilement le contenu du cache. Nous pouvons l'intégrer à l'intérieur du fournisseur afin de pouvoir contrôler visuellement l'état des différentes requêtes effectuées.
+
+```js
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      { /* ... */ }
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
+}
+
+export default App;
+```
+
+React Query dispose de nombreuses autres fonctionnalités décrites dans [sa documentation](https://react-query.tanstack.com/overview).
